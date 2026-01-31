@@ -130,6 +130,7 @@ pub fn doxidize(
         }
     }
 
+    // NOTE(geo-ant): this is probably very inefficient
     let backtick_and_marker = format!("{}{}", BACKTICK, MARKER);
     let backtick = format!("{}", BACKTICK);
 
