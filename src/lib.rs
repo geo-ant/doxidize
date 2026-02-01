@@ -1,11 +1,8 @@
 use std::collections::HashSet;
 
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::Span;
 use quote::{ToTokens, quote};
-use syn::{
-    Attribute, Expr, FnArg, Generics, Ident, ItemFn, LitStr, Meta, MetaNameValue, Pat,
-    parse_macro_input, spanned::Spanned,
-};
+use syn::{Expr, FnArg, ItemFn, Meta, MetaNameValue, Pat, parse_macro_input, spanned::Spanned};
 
 // from today's clippy threshold for the too many arguments lint
 const REASONABLE_MAX_NUMBER_OF_FUNCTION_PARAMS: usize = 7;
@@ -192,6 +189,5 @@ fn extract_function_parameter_and_generics_indentifiers(function: &ItemFn) -> Ha
             }
         }
     }
-
     idents
 }
