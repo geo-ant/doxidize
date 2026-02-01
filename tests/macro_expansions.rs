@@ -1,5 +1,4 @@
 #[test]
 fn macro_expansion() {
-    // macrotest::expand("tests/expansion/*.rs");
-    todo!()
+    macrotest::expand("tests/expansion/*.rs");
 }
