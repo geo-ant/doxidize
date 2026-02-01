@@ -1,0 +1,5 @@
+error: Function has no parameters or generics to document. Remove the #[doxidize] attribute.
+ --> tests/fail/no_arguments.rs:5:1
+  |
+5 | fn this_function_has_nothing_to_document() {}
+  | ^^

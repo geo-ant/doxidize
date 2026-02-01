@@ -35,6 +35,16 @@ pub fn doxidize(
     // names and const generic names.
     let generics_and_params_names = extract_function_parameter_and_generics_indentifiers(&function);
 
+    if generics_and_params_names.is_empty() {
+        return syn::Error::new(
+            function.sig.span(),
+            "Function has no parameters or generics to document. Remove the #[doxidize] attribute.",
+        )
+        .to_compile_error()
+        .to_token_stream()
+        .into();
+    }
+
     // we now remove all the doc strings from the function and collect
     // all the individual lines here.
     let doc_string_lines: Vec<DocCommentLine> = function
@@ -66,6 +76,7 @@ pub fn doxidize(
         })
         .collect();
 
+    let mut is_any_parameter_documented = false;
     // just very simple parsing which just searches for the backticks and
     // check the stuff inside the ticks against the allowed generic, const generic,
     // and parameter names if it begins with a marker.
@@ -106,6 +117,7 @@ pub fn doxidize(
 
             let substr = &doc_line.comment[search_start..closing_backtick_pos];
             if substr.starts_with(MARKER) {
+                is_any_parameter_documented = true;
                 // this is a bit dumb with the allocations, there must be
                 // a better way to use the hashmap.
                 let ident_candidate = substr[1..].to_string();
@@ -129,6 +141,16 @@ pub fn doxidize(
                 search_start = closing_backtick_pos + 1;
             }
         }
+    }
+
+    if !is_any_parameter_documented {
+        return syn::Error::new(
+            function.sig.span(),
+            format!("No parameters documented!\nUse the `$identifier` syntax (e.g. `${}`) to refer to a function parameter or generic or consider removing the `#[doxidize]` attribute.", generics_and_params_names.iter().next().unwrap()),
+        )
+        .to_compile_error()
+        .to_token_stream()
+        .into();
     }
 
     // NOTE(geo-ant): this is probably very inefficient
