@@ -220,3 +220,9 @@ fn extract_function_parameter_and_generics_indentifiers(function: &ItemFn) -> Ha
     }
     idents
 }
+
+// very incomplete and dumb function to check if an identifier is even a
+// valid ident
+fn is_valid_ident(identifier: &str) -> bool {
+    true
+}
