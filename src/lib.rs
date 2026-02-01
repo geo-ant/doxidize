@@ -1,30 +1,34 @@
-use std::collections::HashSet;
-
 use proc_macro2::Span;
 use quote::{ToTokens, quote};
+use std::collections::HashSet;
 use syn::{Expr, FnArg, ItemFn, Meta, MetaNameValue, Pat, parse_macro_input, spanned::Spanned};
 
-// from today's clippy threshold for the too many arguments lint
+// from today's clippy threshold for the "too many arguments" lint, so should
+// be useful for constructing our internal buffer size
 const REASONABLE_MAX_NUMBER_OF_FUNCTION_PARAMS: usize = 7;
 const REASONABLE_MAX_NUMBER_OF_FUNCTION_GENERICS: usize = 7;
-
-const BACKTICK: char = '`';
 
 /// the marker char in docstrings that mean that a variable `$name`
 /// is meant to reference a generic, parameter name, or const generic.
 const MARKER: char = '$';
+const BACKTICK: char = '`';
 
-struct DocLine {
+struct DocCommentLine {
     comment: String,
     span: Span,
 }
 
 #[proc_macro_attribute]
-/// the principal attribute inside this crate that lets us document function arguments
+/// The principal macro attribute in this crate that lets us keep function
+/// documentation in sync with the function signature.
 pub fn doxidize(
     _attr: proc_macro::TokenStream,
     item: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
+    // TODO(geo-ant): this parses also the function body, which is definitely
+    // overkill. I should come up with a way, to parse only the attributes
+    // and the signature. This can probably be done by extracting the relevant
+    // code from the syn crate and hacking it a bit.
     let mut function: ItemFn = parse_macro_input!(item as ItemFn);
 
     // this now constains the whole list of parameter names, generic param
@@ -33,7 +37,7 @@ pub fn doxidize(
 
     // we now remove all the doc strings from the function and collect
     // all the individual lines here.
-    let doc_string_lines: Vec<DocLine> = function
+    let doc_string_lines: Vec<DocCommentLine> = function
         .attrs
         // this removes all the doc attributes from the original vector
         .extract_if(.., |attr| attr.path().is_ident("doc"))
@@ -55,7 +59,7 @@ pub fn doxidize(
 
                 let comment = doc_string.value();
                 let span = lit.span();
-                DocLine { comment, span }
+                DocCommentLine { comment, span }
             } else {
                 unreachable!("reached unexpected node while parsing");
             }
@@ -128,6 +132,7 @@ pub fn doxidize(
     }
 
     // NOTE(geo-ant): this is probably very inefficient
+    // TODO(geo-ant): improve this
     let backtick_and_marker = format!("{}{}", BACKTICK, MARKER);
     let backtick = format!("{}", BACKTICK);
 
