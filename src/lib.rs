@@ -1,3 +1,5 @@
+#![doc= include_str!("../Readme.md")]
+
 use proc_macro2::Span;
 use quote::{ToTokens, quote};
 use std::collections::HashSet;
