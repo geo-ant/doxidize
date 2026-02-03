@@ -12,7 +12,7 @@ pub struct ParsedComment<'a> {
 
 pub fn parse_coments<'a>(lines: &'a [DocCommentLine]) -> ParsedComment<'a> {
     let parsed_lines = lines
-        .into_iter()
+        .iter()
         .map(|line| parse_line(&line.comment, line.span))
         .collect();
 
@@ -111,7 +111,7 @@ fn parse_line(line: &'_ str, span: Span) -> Vec<CommentLineToken<'_>> {
     let mut start_index = 0;
 
     while start_index < line.len() {
-        let Some(open_marker_pos) = (&line[start_index..])
+        let Some(open_marker_pos) = line[start_index..]
             .find(OPEN_MARKER)
             .map(|pos| pos + start_index)
         else {
@@ -121,7 +121,7 @@ fn parse_line(line: &'_ str, span: Span) -> Vec<CommentLineToken<'_>> {
             break;
         };
 
-        let Some(closed_marker_pos) = (&line[start_index..])
+        let Some(closed_marker_pos) = line[start_index..]
             .find(CLOSE_MARKER)
             .map(|pos| pos + start_index)
         else {
@@ -158,5 +158,5 @@ fn parse_line(line: &'_ str, span: Span) -> Vec<CommentLineToken<'_>> {
             start_index = closed_marker_pos + 1;
         }
     }
-    return tokenized;
+    tokenized
 }
