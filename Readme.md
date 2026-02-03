@@ -8,7 +8,7 @@ manner.
 If you've ever had the problem of function documentation going out of sync
 with your signature, this macro is for you.  Stick the `#[doxidize]` 
 attribute on top of your function documentation and
-start referring to any parameter `param` using `$param` in the comments. This
+start referring to any parameter `param` using `@{param}` in the comments. This
 also works for generics in the signature.
 
 ```rust
@@ -17,25 +17,39 @@ use doxidize::doxidize;
 #[doxidize]
 /// Sums the rows of an image.
 ///
-/// The rows of `$image_data`, an `$nrows` by `$ncols`
+/// The rows of `@{image_data}`, an `@{nrows}` by `@{ncols}`
 /// matrix in row-major ordering, are summed into `$sums`
-/// which must have exactly `$nrows` elements.
-fn sum_image_rows(
-  image_data: &[f32],
-  nrows: u32,
-  ncols: u32,
-  sums: &mut [f32]) -> Result<(),String> {
+/// which must have exactly `@{nrows}` elements.
+fn sum_image_rows(image_data: &[f32],
+                  nrows: u32,
+                  ncols: u32,
+                  sums: &mut [f32]) -> Result<(),String> {
     todo!()
 }
 ```
 
-
 This will create your function documentation as if you had just written `param`
-instead of `$param`, but will make it a **compile-time error** to refer to a non-existent
-parameter or generic. 
+instead of `@{param}`, but will make it a **compile-time error** to refer to a non-existent
+parameter or generic. You can also use `@{param}` without surrounding it
+with backticks to make it part of the regular text:
 
-Inline code segments that don't start with `$...` will just be ignored. _At least
-one_ parameter (or generic) must be documented, but not all of them have to be.
+```rust
+use doxidize::doxidize;
+
+#[doxidize]
+/// Apply a blur to an image given @{width} and @{height}, where
+/// the corresponding data is `@{image_data}`.
+fn blur(
+  image_data: &mut [f32], width: u32, height: u32) {
+    todo!()
+}
+```
+
+This creates naturally sounding docs that are kept in sync with your actual
+parameter names. Every `@{param}` will be checked and, if valid, be replaced
+with `param`, even inside code blocks (which should be an unlikely use case).
+If you ever need to write `@{param}` without it being replaced, just escape
+it by using `@@{param}`.
 
 ## Recommended Usage
 
