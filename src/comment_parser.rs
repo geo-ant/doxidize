@@ -1,4 +1,6 @@
-use crate::REASONABLE_MAX_NUMBER_OF_FUNCTION_PARAMS;
+use std::char::ParseCharError;
+
+use crate::{DocCommentLine, REASONABLE_MAX_NUMBER_OF_FUNCTION_PARAMS};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 
@@ -9,6 +11,15 @@ const CLOSE_MARKER: char = '}';
 #[derive(Debug, Clone)]
 pub struct ParsedComment<'a> {
     parsed_lines: Vec<Vec<CommentLineToken<'a>>>,
+}
+
+pub fn parse_coments<'a>(lines: &'a [DocCommentLine]) -> ParsedComment<'a> {
+    let parsed_lines = lines
+        .into_iter()
+        .map(|line| parse_line(&line.comment, line.span))
+        .collect();
+
+    ParsedComment { parsed_lines }
 }
 
 impl<'a> ParsedComment<'a> {
