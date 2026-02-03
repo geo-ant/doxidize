@@ -1,9 +1,11 @@
 use doxidize::*;
-/// this is documentation
-/// and this is too. We're documenting the generic `S` but not `T`.
+
+#[doxidize]
+/// @{bar} with more weird docs. We're documenting the generic `@{S}` and we're
+/// documenting @{T} without backticks.
 /// Also something about `x = 4` and `y`, which don't exit.
 /// Some more comments.
-/// But then there's `N`, `bar`, and `baz`.
+/// But then there's `@{N}`, let's escape @@{bar}, and document `@{baz}`.
 fn foo<
     /// a lifetime
     'a,
@@ -21,5 +23,9 @@ fn foo<
     baz: String,
     _undocumented: i32,
 ) -> bool {
-    if bar < 100 { baz.len() > bar as usize } else { false }
+    if bar < 100 {
+        baz.len() > bar as usize
+    } else {
+        false
+    }
 }

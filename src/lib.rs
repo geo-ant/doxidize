@@ -1,11 +1,11 @@
+#![deny(missing_docs)]
 #![doc= include_str!("../Readme.md")]
 
+use crate::comment_parser::parse_coments;
 use proc_macro2::Span;
 use quote::{ToTokens, quote};
 use std::collections::HashSet;
 use syn::{Expr, FnArg, ItemFn, Meta, MetaNameValue, Pat, parse_macro_input, spanned::Spanned};
-
-use crate::comment_parser::parse_coments;
 
 // from today's clippy threshold for the "too many arguments" lint, so should
 // be useful for constructing our internal buffer size

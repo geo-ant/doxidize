@@ -134,6 +134,10 @@ fn parse_line(line: &'_ str, span: Span) -> Vec<CommentLineToken<'_>> {
         if open_marker_pos >= ESCAPE_PREFIX.len()
             && &line[open_marker_pos - ESCAPE_PREFIX.len()..open_marker_pos] == ESCAPE_PREFIX
         {
+            // push all the stuff before the marker as verbatim text
+            tokenized.push(CommentLineToken::Verbatim(
+                &line[start_index..open_marker_pos - ESCAPE_PREFIX.len()],
+            ));
             // this is the escaped case: we just leave out the escaping character
             // and copy the rest into the token, which is for @@{...} would
             // be @{...}
@@ -142,6 +146,9 @@ fn parse_line(line: &'_ str, span: Span) -> Vec<CommentLineToken<'_>> {
             ));
             start_index = closed_marker_pos + 1;
         } else {
+            tokenized.push(CommentLineToken::Verbatim(
+                &line[start_index..open_marker_pos],
+            ));
             // this is the case where the user marked @{param} without escape
             // and we just want to parse "param" as the referred ident
             tokenized.push(CommentLineToken::referred(
@@ -151,6 +158,5 @@ fn parse_line(line: &'_ str, span: Span) -> Vec<CommentLineToken<'_>> {
             start_index = closed_marker_pos + 1;
         }
     }
-    println!("tokenized: {:?}", tokenized);
     return tokenized;
 }
