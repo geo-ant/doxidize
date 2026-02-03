@@ -1,5 +1,10 @@
 # doxidize - fearless function documentation 
 
+![build](https://github.com/geo-ant/roxygen/actions/workflows/build.yml/badge.svg?branch=main)
+![tests](https://github.com/geo-ant/roxygen/actions/workflows/tests.yml/badge.svg?branch=main)
+![lints](https://github.com/geo-ant/roxygen/actions/workflows/lints.yml/badge.svg?branch=main)
+[![support](https://raw.githubusercontent.com/geo-ant/user-content/refs/heads/main/ko-fi-support.svg)](https://ko-fi.com/geoant)
+
 Refactoring-proof your function documentation.
 
 ## Usage
