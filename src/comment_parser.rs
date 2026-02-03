@@ -10,7 +10,7 @@ pub struct ParsedComment<'a> {
     parsed_lines: Vec<Vec<CommentLineToken<'a>>>,
 }
 
-pub fn parse_coments<'a>(lines: &'a [DocCommentLine]) -> ParsedComment<'a> {
+pub fn parse_comments<'a>(lines: &'a [DocCommentLine]) -> ParsedComment<'a> {
     let parsed_lines = lines
         .iter()
         .map(|line| parse_line(&line.comment, line.span))

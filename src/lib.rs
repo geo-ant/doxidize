@@ -15,7 +15,7 @@
 //!
 //! This will trigger the macro only if you invoke `cargo test` or `cargo doc`,
 //! not on a regular `build` or `check` command.
-use crate::comment_parser::parse_coments;
+use crate::comment_parser::parse_comments;
 use proc_macro2::Span;
 use quote::{ToTokens, quote};
 use std::collections::HashSet;
@@ -46,7 +46,7 @@ pub fn doxidize(
     // code from the syn crate and hacking it a bit.
     let mut function: ItemFn = parse_macro_input!(item as ItemFn);
 
-    // this now constains the whole list of parameter names, generic param
+    // this now contains the whole list of parameter names, generic param
     // names and const generic names.
     let generics_and_params_names = extract_function_parameter_and_generics_indentifiers(&function);
 
@@ -91,12 +91,9 @@ pub fn doxidize(
         })
         .collect();
 
-    let parsed = parse_coments(&doc_string_lines);
-
+    let parsed = parse_comments(&doc_string_lines);
     let mut is_any_parameter_documented = false;
-    // just very simple parsing which just searches for the backticks and
-    // check the stuff inside the ticks against the allowed generic, const generic,
-    // and parameter names if it begins with a marker.
+
     for param in parsed.referred() {
         is_any_parameter_documented = true;
         if !generics_and_params_names.contains(param.ident) {
@@ -116,7 +113,7 @@ pub fn doxidize(
     if !is_any_parameter_documented {
         return syn::Error::new(
             function.sig.span(),
-            format!("No parameters documented!\nUse the `$identifier` syntax (e.g. `${}`) to refer to a function parameter or generic or consider removing the `#[doxidize]` attribute.", generics_and_params_names.iter().next().unwrap()),
+            format!("No parameters documented!\nUse the @{{identifier}} syntax (e.g. `@{{{}}}`) to refer to a function parameter or generic or consider removing the `#[doxidize]` attribute.", generics_and_params_names.iter().next().unwrap()),
         )
         .to_compile_error()
         .to_token_stream()

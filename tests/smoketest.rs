@@ -9,10 +9,10 @@ fn foo<T, U, const C: i32>(first: i32, second: f32) -> f32 {
     first as f32 - second
 }
 
-// #[doxidize]
-// /// Let `$x$` or `$$x$$` be katex comments and `$x` and `$y`
-// /// refer to the parameters but `$y$` and `$x+y$` do not.
-// /// This should leave the katex stuff untouched...
-// fn mathy_fun(x: i32, y: i32) -> i32 {
-//     x * y + y
-// }
+#[doxidize]
+/// Let `$@{x}$` or `$$@{x}$$` be katex comments and `@{x}` and `@{y}`
+/// refer to the parameters but `$y$` and `$x+y$` do not.
+/// This should leave the katex stuff untouched...
+fn mathy_fun(x: i32, y: i32) -> i32 {
+    x * y + y
+}
