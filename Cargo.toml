@@ -2,6 +2,14 @@
 name = "doxidize"
 version = "0.1.0"
 edition = "2024"
+authors = ["geo-ant"]
+license = "MIT"
+homepage = "https://github.com/geo-ant/doxidize"
+repository = "https://github.com/geo-ant/doxidize"
+description = "Fearlessly document function parameters with rustdoc"
+readme = "Readme.md"
+categories = ["rust-patterns","development-tools"]
+keywords = ["document", "function", "parameters", "arguments", "doxygen"]
 
 [lib]
 proc-macro = true

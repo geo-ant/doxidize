@@ -1,0 +1,23 @@
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Runs the workflow at 00:00 on the first day of every month
+    - cron: '0 0 1 * *'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install cargo-expand
+        run: cargo install cargo-expand
+      - name: Run tests
+        run: cargo test --workspace --all-targets --all-features

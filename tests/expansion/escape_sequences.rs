@@ -1,12 +1,11 @@
 use doxidize::*;
 
 #[doxidize]
-/// this is documentation
-/// and this is too. We're documenting the generic `@{S}` but not `T`.
+/// @{bar} with more weird docs. We're documenting the generic `@{S}` and we're
+/// documenting @{T} without backticks.
 /// Also something about `x = 4` and `y`, which don't exit.
 /// Some more comments.
-/// But then there's `@{N}`, `@{bar}`, and `@{baz}`.
-// this is not documentation
+/// But then there's `@{N}`, let's escape @@{bar}, and document `@{baz}`.
 fn foo<
     /// a lifetime
     'a,
