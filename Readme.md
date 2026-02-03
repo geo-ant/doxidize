@@ -29,6 +29,7 @@ fn sum_image_rows(
 }
 ```
 
+
 This will create your function documentation as if you had just written `param`
 instead of `$param`, but will make it a **compile-time error** to refer to a non-existent
 parameter or generic. 

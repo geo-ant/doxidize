@@ -20,6 +20,8 @@ struct DocCommentLine {
     span: Span,
 }
 
+mod comment_parser;
+
 #[proc_macro_attribute]
 /// The principal macro attribute in this crate that lets us keep function
 /// documentation in sync with the function signature.
