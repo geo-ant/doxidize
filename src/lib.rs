@@ -1,6 +1,20 @@
 #![deny(missing_docs)]
 #![doc= include_str!("../Readme.md")]
-
+//! ## Conditional Usage
+//!
+//! If you don't want to invoke the macro on every `cargo check` or `cargo build`,
+//! you might want to apply it conditionally like so:
+//!
+//! ```rust
+//! use doxidize::doxidize;
+//!
+//! #[cfg_attr(doc,doxidize)]
+//! /// The argument `@{arg}` is a dummy.
+//! fn foo(arg: i32) {}
+//! ```
+//!
+//! This will trigger the macro only if you invoke `cargo test` or `cargo doc`,
+//! not on a regular `build` or `check` command.
 use crate::comment_parser::parse_coments;
 use proc_macro2::Span;
 use quote::{ToTokens, quote};
