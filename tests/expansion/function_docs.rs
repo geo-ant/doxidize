@@ -2,10 +2,10 @@ use doxidize::*;
 
 #[doxidize]
 /// this is documentation
-/// and this is too. We're documenting the generic `$S` but not `T`.
+/// and this is too. We're documenting the generic `@{S}` but not `T`.
 /// Also something about `x = 4` and `y`, which don't exit.
 /// Some more comments.
-/// But then there's `$N`, `$bar`, and `$baz`.
+/// But then there's `@{N}`, `@{bar}`, and `@{baz}`.
 // this is not documentation
 fn foo<
     /// a lifetime

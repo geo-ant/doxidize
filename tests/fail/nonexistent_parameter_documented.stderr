@@ -1,5 +1,5 @@
 error: documented item 'bar' is not part of the function signature!
  --> tests/fail/nonexistent_parameter_documented.rs:5:1
   |
-5 | /// but also `$bar` which does not, but the generic `$T` exists.
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+5 | /// but also `@{bar}` which does not, but the generic `@{T}` exists.
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -5,15 +5,12 @@ use quote::{ToTokens, quote};
 use std::collections::HashSet;
 use syn::{Expr, FnArg, ItemFn, Meta, MetaNameValue, Pat, parse_macro_input, spanned::Spanned};
 
+use crate::comment_parser::parse_coments;
+
 // from today's clippy threshold for the "too many arguments" lint, so should
 // be useful for constructing our internal buffer size
 const REASONABLE_MAX_NUMBER_OF_FUNCTION_PARAMS: usize = 7;
 const REASONABLE_MAX_NUMBER_OF_FUNCTION_GENERICS: usize = 7;
-
-/// the marker char in docstrings that mean that a variable `$name`
-/// is meant to reference a generic, parameter name, or const generic.
-const MARKER: char = '$';
-const BACKTICK: char = '`';
 
 struct DocCommentLine {
     comment: String,
@@ -80,70 +77,25 @@ pub fn doxidize(
         })
         .collect();
 
+    let parsed = parse_coments(&doc_string_lines);
+
     let mut is_any_parameter_documented = false;
     // just very simple parsing which just searches for the backticks and
     // check the stuff inside the ticks against the allowed generic, const generic,
     // and parameter names if it begins with a marker.
-    for doc_line in doc_string_lines.iter() {
-        let mut search_start = 0;
-        loop {
-            // no openening backtick found => continue with the next line
-            let Some(open_backtick_pos) = doc_line.comment[search_start..].find(BACKTICK) else {
-                break;
-            };
-
-            if open_backtick_pos == doc_line.comment.len() - 1 {
-                return syn::Error::new(doc_line.span, "unclosed '`' on comment line. All in-line code segments must be opened and closed in the same comment line.")
-                    .to_compile_error()
-                    .to_token_stream()
-                    .into();
-            }
-
-            // if we've found an openening backtick we must find one on the same line
-            // NOTE(geo-ant): not sure if I want to drop that limitation. Tbh, this
-            // make the error messages much better since we can't select subspans.
-            // What that means is that we can only mark a whole comment line
-            // for the error. So by forcing the comment lines to have valid
-            // rust comments, we can restrict our error messages about
-            // not having found variables to inidividual lines, which should
-            // be much more helpful than just marking the whole doc comment.
-            let closing_backtick_pos = {
-                let Some(closing_backtick_relative) =
-                    doc_line.comment[search_start..].find(BACKTICK)
-                else {
-                    return syn::Error::new(doc_line.span, "unclosed '`' on comment line. All in-line code segments must be opened and closed in the same comment line.")
-                        .to_compile_error()
-                        .to_token_stream()
-                        .into();
-                };
-                closing_backtick_relative + search_start
-            };
-
-            let substr = &doc_line.comment[search_start..closing_backtick_pos];
-            if substr.starts_with(MARKER) {
-                is_any_parameter_documented = true;
-                // this is a bit dumb with the allocations, there must be
-                // a better way to use the hashmap.
-                let ident_candidate = substr[1..].to_string();
-                if !generics_and_params_names.contains(&ident_candidate) {
-                    return syn::Error::new(
-                        doc_line.span,
-                        format!(
-                            "documented item '{}' is not part of the function signature!",
-                            ident_candidate
-                        ),
-                    )
-                    .to_compile_error()
-                    .to_token_stream()
-                    .into();
-                }
-            }
-
-            if closing_backtick_pos + 1 >= doc_line.comment.len() {
-                break;
-            } else {
-                search_start = closing_backtick_pos + 1;
-            }
+    for param in parsed.referred() {
+        is_any_parameter_documented = true;
+        if !generics_and_params_names.contains(param.ident) {
+            return syn::Error::new(
+                param.span,
+                format!(
+                    "documented item '{}' is not part of the function signature!",
+                    &param.ident
+                ),
+            )
+            .to_compile_error()
+            .to_token_stream()
+            .into();
         }
     }
 
@@ -157,14 +109,7 @@ pub fn doxidize(
         .into();
     }
 
-    // NOTE(geo-ant): this is probably very inefficient
-    // TODO(geo-ant): improve this
-    let backtick_and_marker = format!("{}{}", BACKTICK, MARKER);
-    let backtick = format!("{}", BACKTICK);
-
-    let new_doc_strings = doc_string_lines.into_iter().map(|line| {
-        //TODO(geo-ant): this is probably not very smart...
-        let comment = line.comment.replace(&backtick_and_marker, &backtick);
+    let new_doc_strings = parsed.stringify_lines().map(|comment| {
         quote! {
             #[doc = #comment]
         }
@@ -221,10 +166,4 @@ fn extract_function_parameter_and_generics_indentifiers(function: &ItemFn) -> Ha
         }
     }
     idents
-}
-
-// very incomplete and dumb function to check if an identifier is even a
-// valid ident
-fn is_valid_ident(identifier: &str) -> bool {
-    true
 }
