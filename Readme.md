@@ -6,8 +6,7 @@
 ![Crates.io Version](https://img.shields.io/crates/v/doxidize)
 [![support](https://raw.githubusercontent.com/geo-ant/user-content/refs/heads/main/ko-fi-support.svg)](https://ko-fi.com/geoant)
 
-
-Refactoring-proof your function documentation.
+**Refactoring-proof your function docs**
 
 ## Usage
 
