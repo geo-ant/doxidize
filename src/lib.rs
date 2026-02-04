@@ -19,7 +19,7 @@ use crate::comment_parser::parse_comments;
 use proc_macro2::Span;
 use quote::{ToTokens, quote};
 use std::collections::HashSet;
-use syn::{Expr, FnArg, ItemFn, Meta, MetaNameValue, Pat, parse_macro_input, spanned::Spanned};
+use syn::{Expr, FnArg, Meta, MetaNameValue, Pat, parse_macro_input, spanned::Spanned};
 
 // from today's clippy threshold for the "too many arguments" lint, so should
 // be useful for constructing our internal buffer size
@@ -32,6 +32,7 @@ struct DocCommentLine {
 }
 
 mod comment_parser;
+mod utility;
 
 #[proc_macro_attribute]
 /// The principal macro attribute in this crate that lets us keep function
@@ -44,7 +45,7 @@ pub fn doxidize(
     // overkill. I should come up with a way, to parse only the attributes
     // and the signature. This can probably be done by extracting the relevant
     // code from the syn crate and hacking it a bit.
-    let mut function: ItemFn = parse_macro_input!(item as ItemFn);
+    let mut function = parse_macro_input!(item as utility::ItemFunction);
 
     // this now contains the whole list of parameter names, generic param
     // names and const generic names.
@@ -134,7 +135,9 @@ pub fn doxidize(
 }
 
 /// extract the parameter names (identifiers) from a function
-fn extract_function_parameter_and_generics_indentifiers(function: &ItemFn) -> HashSet<String> {
+fn extract_function_parameter_and_generics_indentifiers(
+    function: &utility::ItemFunction,
+) -> HashSet<String> {
     let parameters = function.sig.inputs.iter();
     let (params_lower, params_upper) = parameters.size_hint();
 

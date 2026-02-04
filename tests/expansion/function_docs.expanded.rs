@@ -4,6 +4,7 @@ use doxidize::*;
 /// Also something about `x = 4` and `y`, which don't exit.
 /// Some more comments.
 /// But then there's `N`, `bar`, and `baz`.
+#[must_use = "something"]
 fn foo<
     /// a lifetime
     'a,

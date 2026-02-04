@@ -1,7 +1,7 @@
+#![allow(dead_code)]
 use doxidize::*;
 
 #[doxidize]
-#[allow(dead_code)]
 /// The parameter `@{first}` is kept in sync, but there is no parameter `bar`.
 /// There is a `@{second}` parameter though and a generic argument called `@{T}`
 /// generic and a const generic `@{C}`.
