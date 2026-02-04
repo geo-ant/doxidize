@@ -5,6 +5,9 @@ const ESCAPE_PREFIX: &str = "@";
 const OPEN_MARKER: &str = "@{";
 const CLOSE_MARKER: char = '}';
 
+#[cfg(test)]
+mod test;
+
 #[derive(Debug, Clone)]
 pub struct ParsedComment<'a> {
     parsed_lines: Vec<Vec<CommentLineToken<'a>>>,
