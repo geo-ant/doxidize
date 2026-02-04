@@ -124,9 +124,10 @@ fn parse_line(line: &'_ str, span: Span) -> Vec<CommentLineToken<'_>> {
             break;
         };
 
-        let Some(closed_marker_pos) = line[start_index..]
+        // Search for close marker AFTER the open marker, not from start_index
+        let Some(closed_marker_pos) = line[open_marker_pos..]
             .find(CLOSE_MARKER)
-            .map(|pos| pos + start_index)
+            .map(|pos| pos + open_marker_pos)
         else {
             tokenized.push(CommentLineToken::Verbatim(&line[start_index..]));
             break;
