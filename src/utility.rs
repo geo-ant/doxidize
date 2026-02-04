@@ -6,14 +6,14 @@ use syn::{AttrStyle, Attribute, Signature, Visibility, parse::Parse};
 /// that the `block` isn't parsed, it's just a tokenstream, which should
 /// be faster than parsing the actual block as well. We don't need the block
 /// to be parsed for the logic inside this crate.
-pub struct ItemFunction {
+pub struct MinimalistItemFn {
     pub attrs: Vec<Attribute>,
     pub vis: Visibility,
     pub sig: Signature,
     pub block: TokenStream,
 }
 
-impl ToTokens for ItemFunction {
+impl ToTokens for MinimalistItemFn {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         // NOTE(geo-ant): this is the same as the `ToTokens` implementation
         // for ItemFn in the syn crate. The only difference in implementation
@@ -39,7 +39,7 @@ impl ToTokens for ItemFunction {
     }
 }
 
-impl Parse for ItemFunction {
+impl Parse for MinimalistItemFn {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
         // same logic as in the syn crate with the difference that the
         // block is just read as is.

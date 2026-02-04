@@ -45,7 +45,7 @@ pub fn doxidize(
     // overkill. I should come up with a way, to parse only the attributes
     // and the signature. This can probably be done by extracting the relevant
     // code from the syn crate and hacking it a bit.
-    let mut function = parse_macro_input!(item as utility::ItemFunction);
+    let mut function = parse_macro_input!(item as utility::MinimalistItemFn);
 
     // this now contains the whole list of parameter names, generic param
     // names and const generic names.
@@ -136,7 +136,7 @@ pub fn doxidize(
 
 /// extract the parameter names (identifiers) from a function
 fn extract_function_parameter_and_generics_indentifiers(
-    function: &utility::ItemFunction,
+    function: &utility::MinimalistItemFn,
 ) -> HashSet<String> {
     let parameters = function.sig.inputs.iter();
     let (params_lower, params_upper) = parameters.size_hint();
