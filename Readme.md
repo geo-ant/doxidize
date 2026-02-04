@@ -3,9 +3,10 @@
 ![build](https://github.com/geo-ant/doxidize/actions/workflows/build.yml/badge.svg?branch=main)
 ![tests](https://github.com/geo-ant/doxidize/actions/workflows/tests.yml/badge.svg?branch=main)
 ![lints](https://github.com/geo-ant/doxidize/actions/workflows/lints.yml/badge.svg?branch=main)
+![Crates.io Version](https://img.shields.io/crates/v/doxidize)
 [![support](https://raw.githubusercontent.com/geo-ant/user-content/refs/heads/main/ko-fi-support.svg)](https://ko-fi.com/geoant)
 
-Refactoring-proof your function documentation.
+**Refactoring-proof your function docs**
 
 ## Usage
 

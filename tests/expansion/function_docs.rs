@@ -7,6 +7,7 @@ use doxidize::*;
 /// Some more comments.
 /// But then there's `@{N}`, `@{bar}`, and `@{baz}`.
 // this is not documentation
+#[must_use = "something"]
 fn foo<
     /// a lifetime
     'a,
